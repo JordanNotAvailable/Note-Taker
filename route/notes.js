@@ -11,12 +11,13 @@ const {
   });
   
   // GET Route for a specific note
-  note.get('/:note_id', (req, res) => {
-    const noteId = req.params.note_id;
+  note.get('/', (req, res) => {
+    console.log('test');
+    // const noteId = req.params.id;
     readFromFile('./db/db.json')
       .then((data) => JSON.parse(data))
       .then((json) => {
-        const result = json.filter((note) => note.note_id === noteId);
+        const result = json.filter((note) => note.id === id);
         return result.length > 0
           ? res.json(result)
           : res.json('No Note with that ID');
@@ -24,13 +25,13 @@ const {
   });
   
   // DELETE Route for a specific note
-  note.delete('/:note_id', (req, res) => {
-    const noteId = req.params.note_id;
+  note.delete('/:id', (req, res) => {
+    const noteId = req.params.id;
     readFromFile('./db/db.json')
       .then((data) => JSON.parse(data))
       .then((json) => {
         // Make a new array of all note except the one with the ID provided in the URL
-        const result = json.filter((note) => note.note_id !== noteId);
+        const result = json.filter((note) => note.id !== id);
 
         console.log(result)
         // Save that array to the filesystem
@@ -45,14 +46,13 @@ const {
   note.post('/', (req, res) => {
     console.log(req.body);
   
-    const {  title, task, note } = req.body;
+    const {  title, text } = req.body;
   
     if (req.body) {
       const newNote = {
         title,
-        task,
-        note,
-        note_id: uuid(),
+        text,
+        id: uuid(),
       };
   
       readAndAppend(newNote, './db/db.json');
